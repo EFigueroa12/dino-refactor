@@ -1,89 +1,47 @@
-# Provided function
-def run(dinos)
-    dinos.each do |d|
-      if d['age'] > 0
-        if d['category'] == 'herbivore'
-          d['health'] = d['diet'] == 'plants' ? (100 - d['age']) : (100 - d['age']) / 2
-        else
-          if d['category'] == 'carnivore'
-            d['health'] = d['diet'] == 'meat' ? (100 - d['age']) : (100 - d['age']) / 2
-          end
-        end
-      else
-        d['health'] = 0
-      end
-  
-      if d['health'] > 0
-        d['comment'] = 'Alive'
-      else
-        d['comment'] = 'Dead'
-      end
-    end
-  
-    dinos.each do |d|
-      if d['comment'] == 'Alive'
-        if d['age'] > 1
-          d['age_metrics'] = (d['age'] / 2).to_i
-        else
-          d['age_metrics'] = 0
-        end
-      else
-        d['age_metrics'] = 0
-      end
-    end
-  
-    if dinos && dinos.length > 0
-      a = dinos.group_by { |d| d['category'] }.map do |category, dino_list|
-        { category: category, count: dino_list.count }
-      end
-    end
-  
-    f = {}
-    a.each do |category_metrics|
-      f[category_metrics[:category]] = category_metrics[:count]
-    end
-  
-    return { dinos: dinos, summary: f }
-end
-  
-# My optimized version
-def my_run(dinos)
-    dinos.each do |d|
-        if d['age'] > 0
-            base_health = (100 - d['age'])
-            if ['herbivore', 'carnivore'].include?(d['category'])
-                d['health'] = (d['category']=='herbivore' and d['diet']=='plants') || 
-                                (d['category']=='carnivore' and d['diet']=='meat') ? base_health : base_health / 2
-            end
-            if d['health'] && d['health'] > 0
-                d['comment'] = 'Alive' 
-                d['age_metrics'] = d['age'] > 1 ? (d['age']/ 2).to_i : 0
-            else 
-                d['comment'] = 'Dead'
-                d['age_metrics'] = 0
-            end
-        else
-        d['health'] = 0
-        d['comment'] = 'Dead'
-        d['age_metrics'] = 0
-        end
+# My Dino Management 
+class DinoManagement
+  def self.run(dinos)
+    { dinos: [], summary: {} } if dinos&.empty?
+
+    dinos.each do |dino|
+      calculate_health(dino)
+      set_comment(dino)
+      calculate_age_metric(dino)
     end
 
-    f = {}
-    if dinos && !dinos.empty?
-        f = dinos.group_by{ |d| d['category']}.transform_values(&:count)
-    end
+      summary = generate_summary(dinos)
+      { dinos: dinos, summary: summary}
+  end
 
-    return { dinos: dinos, summary: f }
+  private
+
+  def self.calculate_health(dino)
+    base_health = (100 - dino['age'])
+    dino['health'] = if dino['age'] <= 0
+                       0
+                     else
+                (dino['category'] == 'herbivore' && dino['diet'] == 'plants') || 
+                (dino['category'] == 'carnivore' && dino['diet'] == 'meat') ? base_health : base_health / 2
+                     end
+  end
+
+  def self.set_comment(dino)
+    dino['comment'] = dino['health'] > 0 ? 'Alive' : 'Dead'
+  end
+
+  def self.calculate_age_metric(dino)
+    dino['age_metrics'] = dino['comment'] == 'Dead' ? 0 : (dino['age'] > 1 ? (dino['age'] / 2) : 0)
+  end
+
+  def self.generate_summary(dinos)
+    dinos.group_by { |d| d['category'] }.transform_values(&:count)
+  end
 end
 
-data = [
-        { "name"=>"DinoA", "category"=>"herbivore", "period"=>"Cretaceous", "diet"=>"plants", "age"=>100 },
-        { "name"=>"DinoB", "category"=>"carnivore", "period"=>"Jurassic", "diet"=>"meat", "age"=>80 }
-        ]
-dinfo = run(data)
 
-puts dinfo
-
-dinfo2 =my_run(data)
-puts dinfo2 #sameoutput as dinfo in run
+# data = [
+#         { "name"=>"DinoA", "category"=>"herbivore", "period"=>"Cretaceous", "diet"=>"plants", "age"=>100 },
+#         { "name"=>"DinoB", "category"=>"carnivore", "period"=>"Jurassic", "diet"=>"meat", "age"=>80 }
+#         ]
+# dinfo = DinoManagement.run(data)
+# puts dinfo

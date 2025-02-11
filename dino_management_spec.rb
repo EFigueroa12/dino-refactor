@@ -71,6 +71,7 @@ describe "Dino Management" do
 
       it "returns an empty summary when no dinos exist" do
         result = DinoManagement.run([])
+        expect(result[:summary]).to_not be_nil
         expect(result[:summary]).to eq({})
       end
 
@@ -79,6 +80,23 @@ describe "Dino Management" do
         expect(result[:dinos].size).to eq(100000)
         expect(result[:summary]).to have_key("herbivore")
         expect(result[:summary]).to have_key("carnivore")
+      end
+    end
+
+    describe "dinos returned" do
+      it "returns the same dino input data" do
+        result = DinoManagement.run(dino_data)
+        expect(result[:dinos]).to eq(dino_data)
+      end
+
+      it "returns an empty summary when no dinos exist" do
+        result = DinoManagement.run([])
+        expect(result[:dinos]).to_not be_nil
+        expect(result[:dinos]).to eq([])
+      end
+
+      it "return an error when dinos is nil" do
+        expect {DinoManagement.run(nil)}.to raise_error(ArgumentError, "Input must be an array of dinos")
       end
     end
 

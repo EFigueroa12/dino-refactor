@@ -126,6 +126,13 @@ describe "Dino Management" do
       end
     end
 
+    describe "dinos returned" do
+      it "returns the same dino input data" do
+        result = run(dino_data)
+        expect(result[:dinos]).to eq(dino_data)
+      end
+    end
+
     describe "dino category summary" do
       it "counts dinos by categories" do
         # Fill in expectations here

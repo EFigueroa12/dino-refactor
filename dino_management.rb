@@ -1,7 +1,8 @@
 # My Dino Management 
 class DinoManagement
   def self.run(dinos)
-    { dinos: [], summary: {} } if dinos&.empty?
+    raise ArgumentError, "Input must be an array of dinos" unless dinos.is_a?(Array)
+    { dinos: [], summary: {} } if dinos.empty?
 
     dinos.each do |dino|
       calculate_health(dino)

@@ -50,18 +50,18 @@ end
 def my_run(dinos)
     dinos.each do |d|
         if d['age'] > 0
-        base_health = (100 - d['age'])
-        if ['herbivore', 'carnivore'].include?(d['category'])
-            d['health'] = (d['category']=='herbivore' and d['diet']=='plants') || 
-                            (d['category']=='carnivore' and d['diet']=='meat') ? base_health : base_health / 2
-        end
-        if d['health'] && d['health'] > 0
-            d['comment'] = 'Alive' 
-            d['age_metrics'] = d['age'] > 1 ? (d['age']/ 2).to_i : 0
-        else 
-            d['comment'] = 'Dead'
-            d['age_metrics'] = 0
-        end
+            base_health = (100 - d['age'])
+            if ['herbivore', 'carnivore'].include?(d['category'])
+                d['health'] = (d['category']=='herbivore' and d['diet']=='plants') || 
+                                (d['category']=='carnivore' and d['diet']=='meat') ? base_health : base_health / 2
+            end
+            if d['health'] && d['health'] > 0
+                d['comment'] = 'Alive' 
+                d['age_metrics'] = d['age'] > 1 ? (d['age']/ 2).to_i : 0
+            else 
+                d['comment'] = 'Dead'
+                d['age_metrics'] = 0
+            end
         else
         d['health'] = 0
         d['comment'] = 'Dead'

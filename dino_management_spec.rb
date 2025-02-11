@@ -85,10 +85,10 @@ describe "Dino Management" do
     describe "Dino performance comparison" do
       it "compares performance of old and new code" do
         old_time = Benchmark.realtime do 
-        run(large_dino_set.dup)
+          run(large_dino_set.dup)
         end
         new_time = Benchmark.realtime do
-        result = DinoManagement.run(large_dino_set.dup)
+          result = DinoManagement.run(large_dino_set.dup)
         end
 
         puts "\nUnoptimized code: #{old_time.round(5)} seconds."
